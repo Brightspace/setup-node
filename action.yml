@@ -46,7 +46,7 @@ runs:
   using: composite
   steps:
     - id: setup_node
-      uses: Brightspace/third-party-actions@actions-setup-node-orig
+      uses: Brightspace/third-party-actions@actions/setup-node
       with:
         always-auth: ${{ inputs.always-auth }}
         node-version: ${{ inputs.node-version }}
