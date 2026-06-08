@@ -11,8 +11,6 @@ inputs:
   check-latest:
     description: 'Set this option if you want the action to check for the latest available version that satisfies the version spec.'
     default: false
-  registry-url:
-    description: 'Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN.'
   scope:
     description: 'Optional scope for authenticating against scoped registries. Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).'
   token:
@@ -29,8 +27,9 @@ inputs:
     description: 'Used to specify an alternative mirror to downlooad Node.js binaries from'
   mirror-token:
     description: 'The token used as Authorization header when fetching from the mirror'
-# TODO: add input to control forcing to pull from cloud or dist.
-#       escape valve for someone having issues or needing the absolute latest which isn't cached yet
+  d2l-legacy-public-npm:
+    description: 'Set to true to use the public npm registry instead of npm.package-registry.brightspace.com'
+    default: false
 outputs:
   cache-hit: 
     description: 'A boolean value to indicate if a cache was hit.'
@@ -49,7 +48,6 @@ runs:
         node-version-file: ${{ inputs.node-version-file }}
         architecture: ${{ inputs.architecture }}
         check-latest: ${{ inputs.check-latest }}
-        registry-url: ${{ inputs.registry-url }}
         scope: ${{ inputs.scope }}
         token: ${{ inputs.token }}
         cache: ${{ inputs.cache }}
