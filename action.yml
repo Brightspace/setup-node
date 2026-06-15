@@ -11,8 +11,6 @@ inputs:
   check-latest:
     description: 'Set this option if you want the action to check for the latest available version that satisfies the version spec.'
     default: false
-  registry-url:
-    description: 'Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN.'
   scope:
     description: 'Optional scope for authenticating against scoped registries. Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).'
   token:
@@ -29,6 +27,8 @@ inputs:
     description: 'Used to specify an alternative mirror to downlooad Node.js binaries from'
   mirror-token:
     description: 'The token used as Authorization header when fetching from the mirror'
+  d2l-registry-token:
+    description: 'The auth token for package-registry.brightspace.com. Should be set to secrets.D2L_PACKAGE_REGISTRY_AUTH_TOKEN.'
 # TODO: add input to control forcing to pull from cloud or dist.
 #       escape valve for someone having issues or needing the absolute latest which isn't cached yet
 outputs:
@@ -49,7 +49,7 @@ runs:
         node-version-file: ${{ inputs.node-version-file }}
         architecture: ${{ inputs.architecture }}
         check-latest: ${{ inputs.check-latest }}
-        registry-url: ${{ inputs.registry-url }}
+        registry-url: ${{ case(inputs.d2l-registry-token != '', 'https://npm.package-registry.brightspace.com', '') }}
         scope: ${{ inputs.scope }}
         token: ${{ inputs.token }}
         cache: ${{ inputs.cache }}
@@ -57,8 +57,11 @@ runs:
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
         mirror: ${{ inputs.mirror }}
         mirror-token: ${{ inputs.mirror-token }}
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.d2l-registry-token }}
 
-    - uses: Brightspace/third-party-actions@actions/checkout
+    - if: '! inputs.d2l-registry-token'
+      uses: Brightspace/third-party-actions@actions/checkout
       with:
         repository: Brightspace/safe-chain-tmp
         path: ./.safe-chain-tmp
@@ -66,16 +69,19 @@ runs:
           d2l-safe-chain.tgz
 
     - name: Install @d2l/safe-chain
+      if: '! inputs.d2l-registry-token'
       shell: bash
       run: |
         npm i --global --ignore-scripts ./.safe-chain-tmp/d2l-safe-chain.tgz
 
     - name: Cleanup checkout
+      if: '! inputs.d2l-registry-token'
       shell: bash
       run: |
         rm -rf ./.safe-chain-tmp
 
     - name: Set Up safe-chain
+      if: '! inputs.d2l-registry-token'
       shell: bash
       run: |
         safe-chain setup-ci

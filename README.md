@@ -1,6 +1,6 @@
 # Brightspace/setup-node
 
-This action is the same as [actions/setup-node](https://github.com/actions/setup-node), except with safe-chain configured.
+This action is the same as [actions/setup-node](https://github.com/actions/setup-node), except with supply chain attack mitigation.
 
 ## Usage
 
