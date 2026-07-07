@@ -43,7 +43,7 @@ runs:
   using: composite
   steps:
     - id: setup_node
-      uses: Brightspace/third-party-actions@actions/setup-node
+      uses: Brightspace/setup-node@main
       with:
         node-version: ${{ inputs.node-version }}
         node-version-file: ${{ inputs.node-version-file }}
@@ -57,6 +57,7 @@ runs:
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
         mirror: ${{ inputs.mirror }}
         mirror-token: ${{ inputs.mirror-token }}
+        d2l-registry-token: ${{ secrets.D2L_PACKAGE_REGISTRY_AUTH_TOKEN }}
       env:
         NODE_AUTH_TOKEN: ${{ inputs.d2l-registry-token }}
 
