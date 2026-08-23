@@ -70,3 +70,7 @@ runs:
         mirror-token: ${{ inputs.mirror-token }}
       env:
         NODE_AUTH_TOKEN: ${{ inputs.d2l-registry-token }}
+
+    - name: Configure npm user agent
+      shell: bash
+      run: npm config set user-agent "$(npm config get user-agent) ${GITHUB_REPOSITORY}"
